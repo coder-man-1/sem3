@@ -1,0 +1,80 @@
+#include <iostream>
+#include <stack>
+#include <string>
+#include <cctype>
+#include <cmath>
+using namespace std;
+
+// Check if character is operator
+bool isOperator(char ch) {
+    return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^';
+}
+
+// Convert prefix to postfix
+string prefixToPostfix(string prefix) {
+    stack<string> s;
+    
+    // Traverse from right to left
+    for (int i = prefix.length() - 1; i >= 0; i--) {
+        char ch = prefix[i];
+
+        if (isalnum(ch)) {  // Operand (can also check for isdigit() if numeric only)
+            string op(1, ch);
+            s.push(op);
+        }
+        else if (isOperator(ch)) {
+            if (s.size() < 2) {
+                cout << "Invalid prefix expression\n";
+                return "";
+            }
+            string op1 = s.top(); s.pop();
+            string op2 = s.top(); s.pop();
+            string temp = op1 + op2 + ch; // postfix = operand1 operand2 operator
+            s.push(temp);
+        }
+    }
+
+    return s.top();
+}
+
+// Evaluate a prefix expression (assumes only single digit operands)
+int evaluatePrefix(string prefix) {
+    stack<int> s;
+
+    for (int i = prefix.length() - 1; i >= 0; i--) {
+        char ch = prefix[i];
+
+        if (isdigit(ch)) {
+            s.push(ch - '0');
+        }
+        else if (isOperator(ch)) {
+            int op1 = s.top(); s.pop();
+            int op2 = s.top(); s.pop();
+
+            switch (ch) {
+                case '+': s.push(op1 + op2); break;
+                case '-': s.push(op1 - op2); break;
+                case '*': s.push(op1 * op2); break;
+                case '/': s.push(op1 / op2); break;
+                case '^': s.push(pow(op1, op2)); break;
+            }
+        }
+    }
+
+    return s.top();
+}
+
+int main() {
+    string prefix;
+    cout << "Enter Prefix Expression (e.g. *+23-45): ";
+    cin >> prefix;
+
+    string postfix = prefixToPostfix(prefix);
+    int result = evaluatePrefix(prefix);
+
+    cout << "\nPrefix Expression: " << prefix << endl;
+    cout << "Postfix Expression: " << postfix << endl;
+    cout << "Evaluation Result: " << result << endl;
+
+    return 0;
+}
