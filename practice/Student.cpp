@@ -1,5 +1,5 @@
 #include <iostream>
-#include <stdlib>
+#include <cstdlib>
 #include <string>
 using namespace std;
  struct Student
@@ -9,6 +9,7 @@ using namespace std;
  float gpa;
  };
  int main(){
+    int n;
     cout<<"enter number of students";
     cin>>n;
     Student*students=(Student*)malloc(n*sizeof(Student));
